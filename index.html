@@ -55,11 +55,22 @@
   .legend-dot { width: 10px; height: 3px; border-radius: 2px; }
 
   h2 { font-size: 15px; margin-bottom: 10px; }
-  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
-  table { width: 100%; border-collapse: collapse; min-width: 500px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; min-width: 520px; }
   th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 10px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 10px 8px; font-size: 13px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td.symbol { font-weight: 700; }
+  tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .watchlist-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  .watchlist-card h2 { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .watchlist-card .badge {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 3px 8px; border-radius: 4px; font-weight: 700;
+  }
+  .badge.live { background: rgba(0,212,170,0.15); color: var(--green); }
+  .badge.paper { background: rgba(240,185,11,0.15); color: var(--gold); }
+  .watchlist-card .updated { font-size: 11px; color: var(--muted); margin-left: auto; }
 
   .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; }
   .pagination button {
@@ -77,6 +88,9 @@
     .grid { grid-template-columns: repeat(2, 1fr); }
     header h1 { font-size: 18px; }
     .card .value { font-size: 20px; }
+    th, td { padding: 8px 6px; font-size: 12px; }
+    .watchlist-card h2 { flex-wrap: wrap; }
+    .watchlist-card .updated { margin-left: 0; width: 100%; margin-top: 4px; }
   }
 </style>
 </head>
@@ -210,6 +224,43 @@ function renderHoldings(holdings) {
       </tbody></table></div>`;
 }
 
+function renderWatchlist() {
+  const watchlist = DATA.watchlist || [];
+  const isLive = watchlist.length > 0 && DATA.account && DATA.account.equity_usd !== undefined;
+  const badgeClass = isLive ? 'live' : 'paper';
+  const badgeText = isLive ? 'Live' : 'Paper';
+  if (!watchlist.length) return '<div class="watchlist-card"><h2>Watchlist <span class="badge ' + badgeClass + '">' + badgeText + '</span></h2><div class="empty">No active watchlist</div></div>';
+
+  return `
+    <div class="watchlist-card">
+      <h2>Watchlist <span class="badge ${badgeClass}">${badgeText}</span><span class="updated">Updated ${DATA.updated_at||''}</span></h2>
+      <div class="table-wrap"><table>
+        <thead><tr>
+          <th>Symbol</th><th>Strategy</th><th>Price</th><th>Entry</th><th>Stop</th><th>Target</th><th>R:R</th><th>ADV</th><th>Score</th>
+        </tr></thead>
+        <tbody>${watchlist.map(w => `
+          <tr>
+            <td class="symbol">${w.symbol}<div style="font-size:10px;color:var(--muted);font-weight:400">${w.company||''}</div></td>
+            <td style="font-size:11px;color:var(--muted)">${w.strategy}</td>
+            <td>${fmt(w.price)}</td>
+            <td>${fmt(w.entry)}</td>
+            <td>${fmt(w.stop)}</td>
+            <td>${fmt(w.target)}</td>
+            <td>${w.rr.toFixed(2)}</td>
+            <td>${_formatADV(w.adv_usd)}</td>
+            <td>${w.score.toFixed(3)}</td>
+          </tr>`).join('')}
+        </tbody></table></div>
+    </div>`;
+}
+
+function _formatADV(value) {
+  if (value >= 1_000_000_000) return '$' + (value / 1_000_000_000).toFixed(2) + 'B';
+  if (value >= 1_000_000) return '$' + (value / 1_000_000).toFixed(2) + 'M';
+  if (value >= 1_000) return '$' + (value / 1_000).toFixed(2) + 'K';
+  return '$' + value.toFixed(2);
+}
+
 function renderLedger() {
   const trades = DATA.trade_history || [];
   if (!trades.length) return '<h2>Trade Ledger</h2><div class="empty">No closed trades yet</div>';
@@ -281,6 +332,7 @@ function render() {
     </div>
 
     ${renderChartCard()}
+    ${renderWatchlist()}
     ${renderHoldings(holdings)}
     ${renderLedger()}
   `;

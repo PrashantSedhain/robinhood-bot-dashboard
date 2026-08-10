@@ -2,9 +2,9 @@
   "updated_at": "2026-08-09 23:30 ET",
   "market_open": false,
   "account": {
-    "cash_usd": 300.00,
-    "equity_usd": 0.00,
-    "deposited_usd": 300.00
+    "cash_usd": 300.0,
+    "equity_usd": 0.0,
+    "deposited_usd": 300.0
   },
   "holdings": [],
   "trade_history": [],
@@ -12,5 +12,33 @@
   "benchmark": {
     "spx_close": 0,
     "spx_return_pct": 0
-  }
+  },
+  "watchlist": [
+    {
+      "symbol": "AMZN",
+      "company": "Amazon",
+      "strategy": "MOMENTUM_TREND",
+      "price": 274.48,
+      "entry": 287.2,
+      "stop": 269.06,
+      "target": 323.48,
+      "rr": 2.0,
+      "adv_usd": 12744268064,
+      "score": 0.518,
+      "exchange": "NASDAQ"
+    },
+    {
+      "symbol": "LASR",
+      "company": "NLIGHT",
+      "strategy": "PULLBACK_REVERSAL",
+      "price": 56.16,
+      "entry": 56.16,
+      "stop": 45.72,
+      "target": 77.04,
+      "rr": 2.0,
+      "adv_usd": 76796702,
+      "score": 0.838,
+      "exchange": "NASDAQ"
+    }
+  ]
 }
