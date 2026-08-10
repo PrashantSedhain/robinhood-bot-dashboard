@@ -132,16 +132,24 @@ function drawChart() {
   const canvas = document.getElementById('mainChart');
   if (!canvas) return;
   const history = filterHistory(DATA.daily_history || []);
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
   if (history.length < 2) {
-    const ctx = canvas.getContext('2d');
+    const W = rect.width, H = rect.height;
     ctx.fillStyle = '#8888a0';
-    ctx.font = '14px system-ui';
+    ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Not enough data yet', canvas.width/2, canvas.height/2);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Not enough data yet', W / 2, H / 2);
     return;
   }
 
-  const dpr = window.devicePixelRatio || 1;
+
   const rect = canvas.getBoundingClientRect();
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
@@ -171,6 +179,7 @@ function drawChart() {
 
   // X labels
   ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
   const labels = [0, Math.floor((history.length-1)/3), Math.floor(2*(history.length-1)/3), history.length-1];
   labels.forEach(i => {
     const x = sx(i);
