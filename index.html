@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mitra — Autonomous Trading Bot</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #141420;
+    --border: #1e1e30;
+    --text: #e0e0e0;
+    --muted: #8888a0;
+    --green: #00d4aa;
+    --red: #ff4d6a;
+    --blue: #4d9fff;
+    --gold: #f0b90b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 24px; font-weight: 700; }
+  header .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+  header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  header .dot.off { background: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px;
+  }
+  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
+  .card .value { font-size: 28px; font-weight: 700; }
+  .card .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .green { color: var(--green); } .red { color: var(--red); } .blue { color: var(--blue); }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 12px 8px; border-bottom: 1px solid var(--border); }
+  td { padding: 12px 8px; font-size: 14px; border-bottom: 1px solid var(--border); }
+  td.symbol { font-weight: 700; }
+  .bar-container { height: 6px; background: var(--border); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
+  .bar.green { background: var(--green); } .bar.red { background: var(--red); }
+  .chart-row { display: flex; gap: 16px; margin-bottom: 32px; }
+  .chart-row .card { flex: 1; }
+  .sparkline { width: 100%; height: 120px; }
+  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px 0; }
+  .loading { text-align: center; padding: 60px; color: var(--muted); }
+  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="loading">Loading dashboard…</div>
+</div>
+<footer>Mitra Bot · Data refreshes daily after market close · All times ET</footer>
+
+<script>
+const FMT = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+
+function pct(v) {
+  const s = (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+  return `<span class="${v >= 0 ? 'green' : 'red'}">${s}</span>`;
+}
+
+function fmt(v) { return FMT.format(v); }
+
+function renderSparkline(canvasId, values, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas || !values || values.length < 2) return;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width = canvas.offsetWidth * 2;
+  const h = canvas.height = canvas.offsetHeight * 2;
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min || 1;
+  ctx.clearRect(0, 0, w, h);
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  values.forEach((v, i) => {
+    const x = (i / (values.length - 1)) * w;
+    const y = h - ((v - min) / range) * (h - 20) - 10;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  // Fill area
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = color + '15';
+  ctx.fill();
+}
+
+async function load() {
+  try {
+    const resp = await fetch('data.json');
+    const d = await resp.json();
+    render(d);
+  } catch (e) {
+    document.getElementById('app').innerHTML = '<div class="loading">Failed to load data</div>';
+  }
+}
+
+function render(d) {
+  const a = d.account || {};
+  const holdings = d.holdings || [];
+  const history = d.daily_history || [];
+  const benchmark = d.benchmark || {};
+
+  const cash = a.cash_usd || 0;
+  const equity = a.equity_usd || 0;
+  const total = cash + equity;
+  const deposited = a.deposited_usd || total;
+  const pnl = total - deposited;
+  const pnlPct = deposited > 0 ? (pnl / deposited) * 100 : 0;
+
+  // Daily return values for sparklines
+  const botValues = history.map(h => h.bot_total_usd || total);
+  const spxValues = history.map(h => h.spx_close || 0);
+
+  const lastBot = botValues.length ? botValues[botValues.length - 1] : total;
+  const lastSpx = spxValues.length ? spxValues[spxValues.length - 1] : 0;
+  const firstBot = botValues.length ? botValues[0] : deposited;
+  const firstSpx = spxValues.length ? spxValues[0] : 1;
+  const botReturn = firstBot > 0 ? ((lastBot - firstBot) / firstBot) * 100 : 0;
+  const spxReturn = firstSpx > 0 ? ((lastSpx - firstSpx) / firstSpx) * 100 : 0;
+
+  const active = holdings.filter(h => h.status === 'open');
+
+  const html = `
+    <header>
+      <div>
+        <h1>🤖 Mitra</h1>
+        <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">${d.market_open ? 'Market Open' : 'Market Closed'}</span> · ${d.updated_at || ''}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:24px;font-weight:700">${fmt(total)}</div>
+        <div style="font-size:13px;color:var(--muted)">Total Portfolio</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="label">Cash</div>
+        <div class="value">${fmt(cash)}</div>
+      </div>
+      <div class="card">
+        <div class="label">Invested</div>
+        <div class="value">${fmt(equity)}</div>
+        <div class="sub">${active.length} active holding${active.length !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="card">
+        <div class="label">Total P&L</div>
+        <div class="value ${pnl >= 0 ? 'green' : 'red'}">${pct(pnlPct)}</div>
+        <div class="sub">${fmt(pnl)} all-time</div>
+      </div>
+      <div class="card">
+        <div class="label">vs S&P 500</div>
+        <div class="value ${botReturn >= spxReturn ? 'green' : 'red'}">${pct(botReturn - spxReturn)}</div>
+        <div class="sub">Bot ${pct(botReturn)} · SPX ${pct(spxReturn)}</div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="card">
+        <div class="label">Portfolio Value</div>
+        <canvas class="sparkline" id="botChart"></canvas>
+        <div class="sub" style="margin-top:8px">${fmt(firstBot)} → ${fmt(lastBot)}</div>
+      </div>
+      <div class="card">
+        <div class="label">S&P 500</div>
+        <canvas class="sparkline" id="spxChart"></canvas>
+        <div class="sub" style="margin-top:8px">${firstSpx.toFixed(2)} → ${lastSpx.toFixed(2)}</div>
+      </div>
+    </div>
+
+    <h2 style="font-size:16px;margin-bottom:12px">Active Holdings</h2>
+    ${active.length === 0 ? '<div class="empty">No active positions</div>' : `
+    <table>
+      <thead><tr><th>Symbol</th><th>Entry</th><th>Current</th><th>P&L</th><th>Strategy</th><th>Held</th></tr></thead>
+      <tbody>
+        ${active.map(h => {
+          const hp = h.unrealized_pnl_pct || 0;
+          return `<tr>
+            <td class="symbol">${h.symbol}</td>
+            <td>${fmt(h.entry_price)}</td>
+            <td>${fmt(h.current_price)}</td>
+            <td>${pct(hp)}</td>
+            <td>${h.strategy || '—'}</td>
+            <td>${h.days_held || 0}d</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`}
+
+    ${history.length > 1 ? `
+    <h2 style="font-size:16px;margin-bottom:12px">Recent History</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Bot Value</th><th>S&P 500</th><th>Bot Δ</th><th>SPX Δ</th><th>Alpha</th></tr></thead>
+      <tbody>
+        ${history.slice(-10).reverse().map((h, i, arr) => {
+          const prev = arr[i + 1] || h;
+          const bD = prev.bot_total_usd > 0 ? ((h.bot_total_usd - prev.bot_total_usd) / prev.bot_total_usd) * 100 : 0;
+          const sD = prev.spx_close > 0 ? ((h.spx_close - prev.spx_close) / prev.spx_close) * 100 : 0;
+          return `<tr>
+            <td>${h.date}</td>
+            <td>${fmt(h.bot_total_usd)}</td>
+            <td>${h.spx_close.toFixed(2)}</td>
+            <td>${pct(bD)}</td>
+            <td>${pct(sD)}</td>
+            <td>${pct(bD - sD)}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>` : ''}
+  `;
+
+  document.getElementById('app').innerHTML = html;
+
+  // Update status dot
+  const dot = document.getElementById('statusDot');
+  if (dot && !d.market_open) dot.classList.add('off');
+
+  // Render sparklines
+  setTimeout(() => {
+    renderSparkline('botChart', botValues, 'var(--green)');
+    renderSparkline('spxChart', spxValues, 'var(--blue)');
+  }, 100);
+}
+
+load();
+</script>
+</body>
+</html>
