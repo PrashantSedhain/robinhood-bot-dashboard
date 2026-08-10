@@ -18,223 +18,297 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-    min-height: 100vh;
-    padding: 24px;
+    min-height: 100vh; padding: 16px;
   }
   .container { max-width: 960px; margin: 0 auto; }
   header {
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 8px;
   }
-  header h1 { font-size: 24px; font-weight: 700; }
-  header .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
-  header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header .status { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  header .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
   header .dot.off { background: var(--muted); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px;
-  }
-  .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 8px; }
-  .card .value { font-size: 28px; font-weight: 700; }
-  .card .sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 6px; }
+  .card .value { font-size: 24px; font-weight: 700; }
+  .card .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .green { color: var(--green); } .red { color: var(--red); } .blue { color: var(--blue); }
-  table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 12px 8px; border-bottom: 1px solid var(--border); }
-  td { padding: 12px 8px; font-size: 14px; border-bottom: 1px solid var(--border); }
+
+  .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+  .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .periods { display: flex; gap: 4px; }
+  .periods button {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.15s;
+  }
+  .periods button.active { background: var(--green); color: #000; border-color: var(--green); font-weight: 600; }
+  .periods button:hover { border-color: var(--text); color: var(--text); }
+  canvas { width: 100%; height: 280px; }
+  .chart-legend { display: flex; gap: 20px; margin-top: 8px; font-size: 12px; }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 3px; border-radius: 2px; }
+
+  h2 { font-size: 15px; margin-bottom: 10px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; min-width: 500px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); padding: 10px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 8px; font-size: 13px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td.symbol { font-weight: 700; }
-  .bar-container { height: 6px; background: var(--border); border-radius: 3px; margin-top: 4px; overflow: hidden; }
-  .bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
-  .bar.green { background: var(--green); } .bar.red { background: var(--red); }
-  .chart-row { display: flex; gap: 16px; margin-bottom: 32px; }
-  .chart-row .card { flex: 1; }
-  .sparkline { width: 100%; height: 120px; }
-  footer { text-align: center; color: var(--muted); font-size: 12px; padding: 24px 0; }
-  .loading { text-align: center; padding: 60px; color: var(--muted); }
-  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+
+  .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; }
+  .pagination button {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+  }
+  .pagination button:disabled { opacity: 0.3; cursor: default; }
+  .pagination .info { color: var(--muted); }
+
+  .empty { text-align: center; padding: 30px; color: var(--muted); font-size: 13px; }
+  footer { text-align: center; color: var(--muted); font-size: 11px; padding: 20px 0; }
+
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    header h1 { font-size: 18px; }
+    .card .value { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="loading">Loading dashboard…</div>
-</div>
+<div class="container" id="app"><div style="text-align:center;padding:60px;color:var(--muted)">Loading…</div></div>
 <footer>Mitra Bot · Data refreshes daily after market close · All times ET</footer>
 
 <script>
 const FMT = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
+const pct = v => `<span class="${v>=0?'green':'red'}">${(v>=0?'+':'')+v.toFixed(2)}%</span>`;
+const fmt = v => FMT.format(v);
 
-function pct(v) {
-  const s = (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
-  return `<span class="${v >= 0 ? 'green' : 'red'}">${s}</span>`;
-}
+let DATA = null;
+let PERIOD = '1M';
+const PAGE_SIZE = 10;
+let ledgerPage = 0;
 
-function fmt(v) { return FMT.format(v); }
-
-function renderSparkline(canvasId, values, color) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas || !values || values.length < 2) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth * 2;
-  const h = canvas.height = canvas.offsetHeight * 2;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  ctx.clearRect(0, 0, w, h);
-  ctx.beginPath();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  values.forEach((v, i) => {
-    const x = (i / (values.length - 1)) * w;
-    const y = h - ((v - min) / range) * (h - 20) - 10;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.stroke();
-  // Fill area
-  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
-  ctx.fillStyle = color + '15';
-  ctx.fill();
-}
-
-async function load() {
-  try {
-    const resp = await fetch('data.json');
-    const d = await resp.json();
-    render(d);
-  } catch (e) {
-    document.getElementById('app').innerHTML = '<div class="loading">Failed to load data</div>';
+function periodDays(p) {
+  const today = new Date();
+  if (p === '1D') return 1;
+  if (p === '1M') return 30;
+  if (p === 'YTD') {
+    const start = new Date(today.getFullYear(), 0, 1);
+    return Math.ceil((today - start) / 86400000) + 1;
   }
+  if (p === '5Y') return 1825;
+  return 30;
 }
 
-function render(d) {
-  const a = d.account || {};
-  const holdings = d.holdings || [];
-  const history = d.daily_history || [];
-  const benchmark = d.benchmark || {};
+function filterHistory(history) {
+  if (!history || !history.length) return [];
+  const days = periodDays(PERIOD);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - days);
+  return history.filter(h => new Date(h.date + 'T00:00:00') >= cutoff);
+}
 
+function drawChart() {
+  const canvas = document.getElementById('mainChart');
+  if (!canvas) return;
+  const history = filterHistory(DATA.daily_history || []);
+  if (history.length < 2) {
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#8888a0';
+    ctx.font = '14px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Not enough data yet', canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = rect.width, H = rect.height;
+  const pad = { top: 20, right: 20, bottom: 30, left: 60 };
+  const pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
+
+  const botVals = history.map(h => h.bot_total_usd);
+  const spxVals = history.map(h => h.spx_close);
+  const allVals = [...botVals, ...spxVals].filter(v => v > 0);
+  if (!allVals.length) return;
+  const yMin = Math.min(...allVals) * 0.995;
+  const yMax = Math.max(...allVals) * 1.005;
+  const yRange = yMax - yMin || 1;
+
+  const sx = v => pad.left + (v / (history.length - 1)) * pw;
+  const sy = v => pad.top + ph - ((v - yMin) / yRange) * ph;
+
+  // Grid
+  ctx.strokeStyle = '#1e1e30'; ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ph * i) / 4;
+    ctx.beginPath(); ctx.moveTo(pad.left, y); ctx.lineTo(W - pad.right, y); ctx.stroke();
+    ctx.fillStyle = '#8888a0'; ctx.font = '10px system-ui'; ctx.textAlign = 'right';
+    ctx.fillText(FMT.format(yMax - (yRange * i) / 4), pad.left - 8, y + 4);
+  }
+
+  // X labels
+  ctx.textAlign = 'center';
+  const labels = [0, Math.floor((history.length-1)/3), Math.floor(2*(history.length-1)/3), history.length-1];
+  labels.forEach(i => {
+    const x = sx(i);
+    ctx.fillText(history[i].date.slice(5), x, H - pad.bottom + 16);
+    ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, H - pad.bottom); ctx.stroke();
+  });
+
+  // Draw SPX line
+  ctx.beginPath(); ctx.strokeStyle = '#4d9fff'; ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 3]);
+  spxVals.forEach((v, i) => { if (v > 0) i === 0 ? ctx.moveTo(sx(i), sy(v)) : ctx.lineTo(sx(i), sy(v)); });
+  ctx.stroke(); ctx.setLineDash([]);
+
+  // Draw bot line
+  ctx.beginPath(); ctx.strokeStyle = '#00d4aa'; ctx.lineWidth = 2;
+  botVals.forEach((v, i) => { i === 0 ? ctx.moveTo(sx(i), sy(v)) : ctx.lineTo(sx(i), sy(v)); });
+  ctx.stroke();
+
+  // Fill bot area
+  ctx.lineTo(sx(history.length-1), H - pad.bottom); ctx.lineTo(sx(0), H - pad.bottom); ctx.closePath();
+  ctx.fillStyle = 'rgba(0,212,170,0.06)'; ctx.fill();
+}
+
+function renderChartCard() {
+  const p = PERIOD;
+  return `
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:var(--green)"></span> Portfolio</span>
+          <span><span class="legend-dot" style="background:var(--blue)"></span> S&P 500</span>
+        </div>
+        <div class="periods">
+          ${['1D','1M','YTD','5Y'].map(pn => `<button class="${pn===p?'active':''}" onclick="setPeriod('${pn}')">${pn}</button>`).join('')}
+        </div>
+      </div>
+      <canvas id="mainChart"></canvas>
+    </div>`;
+}
+
+function renderHoldings(holdings) {
+  const active = holdings.filter(h => h.status === 'open');
+  if (!active.length) return '<h2>Active Holdings</h2><div class="empty">No active positions</div>';
+  return `
+    <h2>Active Holdings</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Symbol</th><th>Qty</th><th>Entry</th><th>Current</th><th>Mkt Value</th><th>P&L</th><th>Held</th></tr></thead>
+      <tbody>${active.map(h => `
+        <tr>
+          <td class="symbol">${h.symbol}</td>
+          <td>${h.quantity.toFixed(4)}</td>
+          <td>${fmt(h.entry_price)}</td>
+          <td>${fmt(h.current_price)}</td>
+          <td>${fmt(h.market_value)}</td>
+          <td>${pct(h.unrealized_pnl_pct)}</td>
+          <td>${h.days_held||0}d</td>
+        </tr>`).join('')}
+      </tbody></table></div>`;
+}
+
+function renderLedger() {
+  const trades = DATA.trade_history || [];
+  if (!trades.length) return '<h2>Trade Ledger</h2><div class="empty">No closed trades yet</div>';
+  const totalPages = Math.ceil(trades.length / PAGE_SIZE);
+  const page = Math.min(ledgerPage, totalPages - 1);
+  const slice = trades.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  return `
+    <h2>Trade Ledger</h2>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Date</th><th>Symbol</th><th>Entry</th><th>Exit</th><th>P&L</th><th>Held</th><th>Strategy</th></tr></thead>
+      <tbody>${slice.map(t => `
+        <tr>
+          <td>${t.date}</td>
+          <td class="symbol">${t.symbol}</td>
+          <td>${fmt(t.entry_price)}</td>
+          <td>${fmt(t.exit_price)}</td>
+          <td>${pct(t.pnl_pct)} <span style="font-size:11px;color:var(--muted)">${fmt(t.pnl_usd)}</span></td>
+          <td>${t.days_held}d</td>
+          <td style="font-size:11px;color:var(--muted)">${t.strategy}</td>
+        </tr>`).join('')}
+      </tbody></table></div>
+    <div class="pagination">
+      <button ${page===0?'disabled':''} onclick="ledgerPage=Math.max(0,ledgerPage-1);render()">← Prev</button>
+      <span class="info">${page+1} / ${totalPages}</span>
+      <button ${page>=totalPages-1?'disabled':''} onclick="ledgerPage=Math.min(totalPages-1,ledgerPage+1);render()">Next →</button>
+    </div>`;
+}
+
+function setPeriod(p) { PERIOD = p; render(); }
+
+function render() {
+  if (!DATA) return;
+  const a = DATA.account || {};
+  const holdings = DATA.holdings || [];
+  const active = holdings.filter(h => h.status === 'open');
   const cash = a.cash_usd || 0;
-  const equity = a.equity_usd || 0;
+  const equity = active.reduce((s, h) => s + h.market_value, 0);
   const total = cash + equity;
   const deposited = a.deposited_usd || total;
   const pnl = total - deposited;
   const pnlPct = deposited > 0 ? (pnl / deposited) * 100 : 0;
 
-  // Daily return values for sparklines
-  const botValues = history.map(h => h.bot_total_usd || total);
-  const spxValues = history.map(h => h.spx_close || 0);
-
-  const lastBot = botValues.length ? botValues[botValues.length - 1] : total;
-  const lastSpx = spxValues.length ? spxValues[spxValues.length - 1] : 0;
-  const firstBot = botValues.length ? botValues[0] : deposited;
-  const firstSpx = spxValues.length ? spxValues[0] : 1;
-  const botReturn = firstBot > 0 ? ((lastBot - firstBot) / firstBot) * 100 : 0;
-  const spxReturn = firstSpx > 0 ? ((lastSpx - firstSpx) / firstSpx) * 100 : 0;
-
-  const active = holdings.filter(h => h.status === 'open');
+  const hist = filterHistory(DATA.daily_history || []);
+  const firstBot = hist.length ? hist[0].bot_total_usd : deposited;
+  const lastBot = hist.length ? hist[hist.length-1].bot_total_usd : total;
+  const firstSpx = hist.length ? hist[0].spx_close : 0;
+  const lastSpx = hist.length ? hist[hist.length-1].spx_close : 0;
+  const botRet = firstBot > 0 ? ((lastBot - firstBot) / firstBot) * 100 : 0;
+  const spxRet = firstSpx > 0 ? ((lastSpx - firstSpx) / firstSpx) * 100 : 0;
 
   const html = `
     <header>
       <div>
         <h1>🤖 Mitra</h1>
-        <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">${d.market_open ? 'Market Open' : 'Market Closed'}</span> · ${d.updated_at || ''}</div>
+        <div class="status"><span class="dot${DATA.market_open?'':' off'}"></span>${DATA.market_open?'Market Open':'Market Closed'} · ${DATA.updated_at||''}</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:24px;font-weight:700">${fmt(total)}</div>
-        <div style="font-size:13px;color:var(--muted)">Total Portfolio</div>
+        <div style="font-size:22px;font-weight:700">${fmt(total)}</div>
+        <div style="font-size:12px;color:var(--muted)">Total Portfolio</div>
       </div>
     </header>
 
     <div class="grid">
-      <div class="card">
-        <div class="label">Cash</div>
-        <div class="value">${fmt(cash)}</div>
-      </div>
-      <div class="card">
-        <div class="label">Invested</div>
-        <div class="value">${fmt(equity)}</div>
-        <div class="sub">${active.length} active holding${active.length !== 1 ? 's' : ''}</div>
-      </div>
-      <div class="card">
-        <div class="label">Total P&L</div>
-        <div class="value ${pnl >= 0 ? 'green' : 'red'}">${pct(pnlPct)}</div>
-        <div class="sub">${fmt(pnl)} all-time</div>
-      </div>
-      <div class="card">
-        <div class="label">vs S&P 500</div>
-        <div class="value ${botReturn >= spxReturn ? 'green' : 'red'}">${pct(botReturn - spxReturn)}</div>
-        <div class="sub">Bot ${pct(botReturn)} · SPX ${pct(spxReturn)}</div>
-      </div>
+      <div class="card"><div class="label">Cash</div><div class="value">${fmt(cash)}</div></div>
+      <div class="card"><div class="label">Invested</div><div class="value">${fmt(equity)}</div><div class="sub">${active.length} active</div></div>
+      <div class="card"><div class="label">${PERIOD} Return</div><div class="value ${botRet>=0?'green':'red'}">${pct(botRet)}</div><div class="sub">SPX ${pct(spxRet)}</div></div>
+      <div class="card"><div class="label">Alpha</div><div class="value ${botRet>=spxRet?'green':'red'}">${pct(botRet-spxRet)}</div><div class="sub">vs benchmark</div></div>
     </div>
 
-    <div class="chart-row">
-      <div class="card">
-        <div class="label">Portfolio Value</div>
-        <canvas class="sparkline" id="botChart"></canvas>
-        <div class="sub" style="margin-top:8px">${fmt(firstBot)} → ${fmt(lastBot)}</div>
-      </div>
-      <div class="card">
-        <div class="label">S&P 500</div>
-        <canvas class="sparkline" id="spxChart"></canvas>
-        <div class="sub" style="margin-top:8px">${firstSpx.toFixed(2)} → ${lastSpx.toFixed(2)}</div>
-      </div>
-    </div>
-
-    <h2 style="font-size:16px;margin-bottom:12px">Active Holdings</h2>
-    ${active.length === 0 ? '<div class="empty">No active positions</div>' : `
-    <table>
-      <thead><tr><th>Symbol</th><th>Entry</th><th>Current</th><th>P&L</th><th>Strategy</th><th>Held</th></tr></thead>
-      <tbody>
-        ${active.map(h => {
-          const hp = h.unrealized_pnl_pct || 0;
-          return `<tr>
-            <td class="symbol">${h.symbol}</td>
-            <td>${fmt(h.entry_price)}</td>
-            <td>${fmt(h.current_price)}</td>
-            <td>${pct(hp)}</td>
-            <td>${h.strategy || '—'}</td>
-            <td>${h.days_held || 0}d</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>`}
-
-    ${history.length > 1 ? `
-    <h2 style="font-size:16px;margin-bottom:12px">Recent History</h2>
-    <table>
-      <thead><tr><th>Date</th><th>Bot Value</th><th>S&P 500</th><th>Bot Δ</th><th>SPX Δ</th><th>Alpha</th></tr></thead>
-      <tbody>
-        ${history.slice(-10).reverse().map((h, i, arr) => {
-          const prev = arr[i + 1] || h;
-          const bD = prev.bot_total_usd > 0 ? ((h.bot_total_usd - prev.bot_total_usd) / prev.bot_total_usd) * 100 : 0;
-          const sD = prev.spx_close > 0 ? ((h.spx_close - prev.spx_close) / prev.spx_close) * 100 : 0;
-          return `<tr>
-            <td>${h.date}</td>
-            <td>${fmt(h.bot_total_usd)}</td>
-            <td>${h.spx_close.toFixed(2)}</td>
-            <td>${pct(bD)}</td>
-            <td>${pct(sD)}</td>
-            <td>${pct(bD - sD)}</td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>` : ''}
+    ${renderChartCard()}
+    ${renderHoldings(holdings)}
+    ${renderLedger()}
   `;
 
   document.getElementById('app').innerHTML = html;
-
-  // Update status dot
-  const dot = document.getElementById('statusDot');
-  if (dot && !d.market_open) dot.classList.add('off');
-
-  // Render sparklines
-  setTimeout(() => {
-    renderSparkline('botChart', botValues, 'var(--green)');
-    renderSparkline('spxChart', spxValues, 'var(--blue)');
-  }, 100);
+  setTimeout(drawChart, 50);
 }
 
+async function load() {
+  try {
+    const resp = await fetch('data.json');
+    DATA = await resp.json();
+    render();
+  } catch(e) {
+    document.getElementById('app').innerHTML = '<div style="text-align:center;padding:60px;color:var(--muted)">Failed to load data</div>';
+  }
+}
+
+window.addEventListener('resize', () => { if (DATA) { render(); setTimeout(drawChart, 50); } });
 load();
 </script>
 </body>
