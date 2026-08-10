@@ -137,12 +137,10 @@ function drawChart() {
   const pad = { top: 20, right: 20, bottom: 30, left: 60 };
   const pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
 
-  const botVals = history.map(h => h.bot_total_usd);
-  const spxVals = history.map(h => h.spx_close);
-  const allVals = [...botVals, ...spxVals].filter(v => v > 0);
-  if (!allVals.length) return;
-  const yMin = Math.min(...allVals) * 0.995;
-  const yMax = Math.max(...allVals) * 1.005;
+  const botVals = history.map(h => h.bot_total_usd).filter(v => v > 0);
+  if (!botVals.length) return;
+  const yMin = Math.min(...botVals) * 0.995;
+  const yMax = Math.max(...botVals) * 1.005;
   const yRange = yMax - yMin || 1;
 
   const sx = v => pad.left + (v / (history.length - 1)) * pw;
@@ -166,12 +164,6 @@ function drawChart() {
     ctx.beginPath(); ctx.moveTo(x, pad.top); ctx.lineTo(x, H - pad.bottom); ctx.stroke();
   });
 
-  // Draw SPX line
-  ctx.beginPath(); ctx.strokeStyle = '#4d9fff'; ctx.lineWidth = 1.5;
-  ctx.setLineDash([5, 3]);
-  spxVals.forEach((v, i) => { if (v > 0) i === 0 ? ctx.moveTo(sx(i), sy(v)) : ctx.lineTo(sx(i), sy(v)); });
-  ctx.stroke(); ctx.setLineDash([]);
-
   // Draw bot line
   ctx.beginPath(); ctx.strokeStyle = '#00d4aa'; ctx.lineWidth = 2;
   botVals.forEach((v, i) => { i === 0 ? ctx.moveTo(sx(i), sy(v)) : ctx.lineTo(sx(i), sy(v)); });
@@ -189,7 +181,6 @@ function renderChartCard() {
       <div class="chart-header">
         <div class="chart-legend">
           <span><span class="legend-dot" style="background:var(--green)"></span> Portfolio</span>
-          <span><span class="legend-dot" style="background:var(--blue)"></span> S&P 500</span>
         </div>
         <div class="periods">
           ${['1D','1M','YTD','5Y'].map(pn => `<button class="${pn===p?'active':''}" onclick="setPeriod('${pn}')">${pn}</button>`).join('')}
