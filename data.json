@@ -1,15 +1,58 @@
 {
-  "updated_at": "2026-08-09 22:00 ET",
+  "updated_at": "2026-08-15 15:05 ET",
   "market_open": false,
   "account": {
-    "cash_usd": 300.00,
-    "equity_usd": 0.00,
+    "cash_usd": 185.47,
+    "equity_usd": 127.32,
     "deposited_usd": 300.00
   },
-  "holdings": [],
-  "daily_history": [],
+  "holdings": [
+    {
+      "symbol": "NTRA",
+      "quantity": 0.185,
+      "entry_price": 323.01,
+      "current_price": 343.89,
+      "market_value": 63.62,
+      "unrealized_pnl": 3.86,
+      "unrealized_pnl_pct": 6.47,
+      "strategy": "MOMENTUM_TREND",
+      "days_held": 2,
+      "status": "open"
+    },
+    {
+      "symbol": "AVT",
+      "quantity": 0.598,
+      "entry_price": 100.00,
+      "current_price": 103.45,
+      "market_value": 61.86,
+      "unrealized_pnl": 2.07,
+      "unrealized_pnl_pct": 3.46,
+      "strategy": "MOMENTUM_TREND",
+      "days_held": 4,
+      "status": "open"
+    },
+    {
+      "symbol": "PARR",
+      "quantity": 0,
+      "entry_price": 66.29,
+      "current_price": 64.12,
+      "market_value": 0,
+      "unrealized_pnl": -1.84,
+      "unrealized_pnl_pct": -3.27,
+      "strategy": "PULLBACK_REVERSAL",
+      "days_held": 2,
+      "status": "closed"
+    }
+  ],
+  "daily_history": [
+    {"date": "2026-08-10", "bot_total_usd": 300.00, "spx_close": 5832.11},
+    {"date": "2026-08-11", "bot_total_usd": 298.34, "spx_close": 5818.45},
+    {"date": "2026-08-12", "bot_total_usd": 302.91, "spx_close": 5841.72},
+    {"date": "2026-08-13", "bot_total_usd": 307.55, "spx_close": 5856.33},
+    {"date": "2026-08-14", "bot_total_usd": 312.79, "spx_close": 5869.90}
+  ],
   "benchmark": {
-    "spx_close": 0,
-    "spx_return_pct": 0
+    "spx_close": 5869.90,
+    "spx_return_pct": 0.65
   }
 }
