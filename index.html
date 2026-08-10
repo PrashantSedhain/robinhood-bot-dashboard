@@ -150,11 +150,6 @@ function drawChart() {
   }
 
 
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
   const W = rect.width, H = rect.height;
   const pad = { top: 20, right: 20, bottom: 30, left: 60 };
   const pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
