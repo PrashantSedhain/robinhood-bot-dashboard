@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-11 11:54 ET",
-  "generated_at": "2026-08-11T15:54:52.412270Z",
+  "updated_at": "2026-08-11 12:24 ET",
+  "generated_at": "2026-08-11T16:24:41.607822Z",
   "market_open": true,
   "market_session": {
     "calendar_id": "XNYS",
@@ -13,11 +13,24 @@
   "collection_status": "OK",
   "collection_reason": null,
   "account": {
-    "cash_usd": 0.0,
-    "equity_usd": 0.0,
+    "cash_usd": 278.34,
+    "equity_usd": 21.8,
     "deposited_usd": 300.0
   },
-  "holdings": [],
+  "holdings": [
+    {
+      "symbol": "FSLY",
+      "quantity": 0.768632,
+      "entry_price": 28.18,
+      "current_price": 28.36,
+      "market_value": 21.8,
+      "unrealized_pnl": 0.14,
+      "unrealized_pnl_pct": 0.64,
+      "strategy": "MOMENTUM_TREND",
+      "days_held": 0,
+      "status": "open"
+    }
+  ],
   "watchlist": [
     {
       "symbol": "AMZN",
@@ -63,7 +76,7 @@
   "daily_history": [
     {
       "date": "2026-08-11",
-      "bot_total_usd": 0.0,
+      "bot_total_usd": 321.94,
       "spx_close": 0
     }
   ],
