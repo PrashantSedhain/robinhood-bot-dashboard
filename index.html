@@ -230,7 +230,7 @@ function renderHoldings(holdings) {
 
 function renderWatchlist() {
   const watchlist = DATA.watchlist || [];
-  const isLive = watchlist.length > 0 && DATA.account && DATA.account.equity_usd !== undefined;
+  const isLive = DATA.execution_mode === 'LIVE';
   const badgeClass = isLive ? 'live' : 'paper';
   const badgeText = isLive ? 'Live' : 'Paper';
   if (!watchlist.length) return '<div class="watchlist-card"><h2>Watchlist <span class="badge ' + badgeClass + '">' + badgeText + '</span></h2><div class="empty">No active watchlist</div></div>';
@@ -296,6 +296,24 @@ function renderLedger() {
 
 function setPeriod(p) { PERIOD = p; render(); }
 
+function marketIsOpenNow() {
+  const session = DATA && DATA.market_session;
+  if (!session || !session.open_at || !session.close_at) return false;
+  const now = Date.now();
+  const opens = Date.parse(session.open_at);
+  const closes = Date.parse(session.close_at);
+  return Number.isFinite(opens) && Number.isFinite(closes) && now >= opens && now < closes;
+}
+
+function updateMarketStatus() {
+  if (!DATA) return;
+  const open = marketIsOpenNow();
+  const dot = document.getElementById('market-dot');
+  const text = document.getElementById('market-text');
+  if (dot) dot.classList.toggle('off', !open);
+  if (text) text.textContent = open ? 'Market Open' : 'Market Closed';
+}
+
 function render() {
   if (!DATA) return;
   const a = DATA.account || {};
@@ -320,7 +338,7 @@ function render() {
     <header>
       <div>
         <h1>🤖 Mitra</h1>
-        <div class="status"><span class="dot${DATA.market_open?'':' off'}"></span>${DATA.market_open?'Market Open':'Market Closed'} · ${DATA.updated_at||''}</div>
+        <div class="status"><span id="market-dot" class="dot"></span><span id="market-text"></span> · ${DATA.updated_at||''}</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:22px;font-weight:700">${fmt(total)}</div>
@@ -342,12 +360,14 @@ function render() {
   `;
 
   document.getElementById('app').innerHTML = html;
+  updateMarketStatus();
   setTimeout(drawChart, 50);
 }
 
 async function load() {
   try {
-    const resp = await fetch('data.json');
+    const resp = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-store' });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     DATA = await resp.json();
     render();
   } catch(e) {
@@ -356,6 +376,7 @@ async function load() {
 }
 
 window.addEventListener('resize', () => { if (DATA) { render(); setTimeout(drawChart, 50); } });
+window.setInterval(updateMarketStatus, 30000);
 load();
 </script>
 </body>
