@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-12 08:40 ET",
-  "generated_at": "2026-08-12T12:40:09.796159Z",
+  "updated_at": "2026-08-12 08:58 ET",
+  "generated_at": "2026-08-12T12:58:10.002687Z",
   "market_open": false,
   "market_session": {
     "calendar_id": "XNYS",
@@ -14,7 +14,7 @@
   "collection_reason": null,
   "account": {
     "cash_usd": 278.34,
-    "equity_usd": 22.08,
+    "equity_usd": 22.03,
     "deposited_usd": 300.0
   },
   "holdings": [
@@ -81,7 +81,7 @@
     },
     {
       "date": "2026-08-12",
-      "bot_total_usd": 322.54,
+      "bot_total_usd": 322.49,
       "spx_close": 0
     }
   ],
