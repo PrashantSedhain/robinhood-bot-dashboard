@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-12 08:58 ET",
-  "generated_at": "2026-08-12T12:58:10.002687Z",
+  "updated_at": "2026-08-12 16:05 ET",
+  "generated_at": "2026-08-12T20:05:14.995412Z",
   "market_open": false,
   "market_session": {
     "calendar_id": "XNYS",
@@ -14,7 +14,7 @@
   "collection_reason": null,
   "account": {
     "cash_usd": 278.34,
-    "equity_usd": 22.03,
+    "equity_usd": 21.93,
     "deposited_usd": 300.0
   },
   "holdings": [
@@ -22,10 +22,10 @@
       "symbol": "FSLY",
       "quantity": 0.768632,
       "entry_price": 28.18,
-      "current_price": 28.77,
-      "market_value": 22.12,
-      "unrealized_pnl": 0.46,
-      "unrealized_pnl_pct": 2.11,
+      "current_price": 28.53,
+      "market_value": 21.93,
+      "unrealized_pnl": 0.27,
+      "unrealized_pnl_pct": 1.24,
       "strategy": "MOMENTUM_TREND",
       "days_held": 0,
       "status": "open"
@@ -81,7 +81,7 @@
     },
     {
       "date": "2026-08-12",
-      "bot_total_usd": 322.49,
+      "bot_total_usd": 322.2,
       "spx_close": 0
     }
   ],
