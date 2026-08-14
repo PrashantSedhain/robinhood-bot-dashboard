@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-14 14:23 ET",
-  "generated_at": "2026-08-14T18:23:34.434531Z",
+  "updated_at": "2026-08-14 14:48 ET",
+  "generated_at": "2026-08-14T18:48:22.123211Z",
   "market_open": true,
   "market_session": {
     "calendar_id": "XNYS",
@@ -14,7 +14,7 @@
   "collection_reason": null,
   "account": {
     "cash_usd": 278.34,
-    "equity_usd": 23.16,
+    "equity_usd": 23.01,
     "deposited_usd": 300.0
   },
   "holdings": [
@@ -22,10 +22,10 @@
       "symbol": "FSLY",
       "quantity": 0.768632,
       "entry_price": 28.18,
-      "current_price": 30.13,
-      "market_value": 23.16,
-      "unrealized_pnl": 1.5,
-      "unrealized_pnl_pct": 6.92,
+      "current_price": 29.93,
+      "market_value": 23.01,
+      "unrealized_pnl": 1.35,
+      "unrealized_pnl_pct": 6.21,
       "strategy": "MOMENTUM_TREND",
       "days_held": 0,
       "status": "open"
@@ -33,42 +33,42 @@
   ],
   "watchlist": [
     {
-      "symbol": "AMZN",
-      "company": "Amazon",
+      "symbol": "CGON",
+      "company": "CG Oncology, Inc.",
       "strategy": "MOMENTUM_TREND",
-      "price": 278.09,
-      "entry": 287.2,
-      "stop": 268.96,
-      "target": 323.68,
+      "price": 74.71,
+      "entry": 79.39,
+      "stop": 72.41,
+      "target": 93.35,
       "rr": 2.0,
-      "adv_usd": 12812809782,
-      "score": 0.565,
+      "adv_usd": 60145552,
+      "score": 0.846,
       "exchange": "NASDAQ"
     },
     {
-      "symbol": "AXTI",
-      "company": "AXT",
+      "symbol": "NTAP",
+      "company": "NetApp",
       "strategy": "MOMENTUM_TREND",
-      "price": 73.81,
-      "entry": 90.39,
-      "stop": 70.53,
-      "target": 130.11,
+      "price": 204.99,
+      "entry": 209.06,
+      "stop": 194.58,
+      "target": 238.02,
       "rr": 2.0,
-      "adv_usd": 729557098,
-      "score": 0.759,
+      "adv_usd": 434330409,
+      "score": 0.899,
       "exchange": "NASDAQ"
     },
     {
-      "symbol": "FSLY",
-      "company": "Fastly",
+      "symbol": "OKTA",
+      "company": "Okta",
       "strategy": "MOMENTUM_TREND",
-      "price": 27.75,
-      "entry": 28.09,
-      "stop": 24.27,
-      "target": 35.73,
+      "price": 154.95,
+      "entry": 155.9,
+      "stop": 142.66,
+      "target": 182.38,
       "rr": 2.0,
-      "adv_usd": 148085689,
-      "score": 0.865,
+      "adv_usd": 366186817,
+      "score": 0.886,
       "exchange": "NASDAQ"
     }
   ],
@@ -86,7 +86,7 @@
     },
     {
       "date": "2026-08-14",
-      "bot_total_usd": 324.66,
+      "bot_total_usd": 324.36,
       "spx_close": 0
     }
   ],
