@@ -1,17 +1,17 @@
 {
-  "updated_at": "2026-08-14 16:05 ET",
-  "generated_at": "2026-08-14T20:05:55.282174Z",
+  "updated_at": "2026-08-17 08:40 ET",
+  "generated_at": "2026-08-17T12:40:22.501641Z",
   "market_open": false,
   "market_session": {
     "calendar_id": "XNYS",
-    "open_at": "2026-08-14T13:30:00Z",
-    "close_at": "2026-08-14T20:00:00Z",
+    "open_at": "2026-08-17T13:30:00Z",
+    "close_at": "2026-08-17T20:00:00Z",
     "session_type": "REGULAR",
     "source_version": "NYSE-HOLIDAYS-AND-TRADING-HOURS-2026"
   },
   "execution_mode": "LIVE",
-  "collection_status": "OK",
-  "collection_reason": null,
+  "collection_status": "DEGRADED",
+  "collection_reason": "ACCOUNT_UNAVAILABLE",
   "account": {
     "cash_usd": 278.34,
     "equity_usd": 23.01,
